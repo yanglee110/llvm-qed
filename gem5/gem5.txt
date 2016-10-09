@@ -1,0 +1,30 @@
+1.修改configs/common/SysPaths.py中的#60行，将aarch64位的binary和diskimage所在路径替换默认路径。
+2.运行aarch64系统：
+build/ARM/gem5.opt --dump-config=aarch64/config.ini --stats-file=aarch64/stats.txt configs/example/fs.py \
+--machine-type=VExpress_EMM64 --disk-image=/home/dell/workspace/gem5/aarch-system-2014-10/disks/aarch64-ubuntu-trusty\
+-headless.img --kernel=/home/dell/workspace/gem5/aarch-system-2014-10/binaries/vmlinux.aarch64.20140821 --cpu-clock=2000MHz\ 
+-n 4 --mem-type=DDR3_1600_x64 --mem-size=2GB --caches
+
+build/ARM/gem5.opt configs/example/fs.py --machine-type=VExpress_EMM64 --disk-image=/home/dell/workspace/gem5/aarch-system-2014-10/disks/aarch64-ubuntu-trusty-headless.img --kernel=/home/dell/workspace/gem5/aarch-system-2014-10/binaries/vmlinux.aarch64.20140821 --cpu-clock=2000MHz -n 4 --mem-type=DDR3_1600_x64 --mem-size=2GB --caches
+(模拟ODROID-C2)
+CPU quad core cortex a53; clock speed=2000MHz 4 cores
+RAM 2GB
+3. linux主机(debian)和gem5仿真的linux系统(aarch64)之间如何进行数据传输
+将aarch64-ubuntu-trusty-headless.img挂载到/tmp/aarch64: sudo mount -o loop,offset=32256 aarch64-ubuntu-trusty-headless.img /tmp/aarch64/
+将二进制文件拷贝到挂载目录下 cp
+卸载镜像文件 sudo umount /tmp/aarch64 (umount: /tmp/aarch64：目标忙。 解决方法： 关闭含有/tmp/aarch64目录的终端)
+
+4.将在odroid-c2上编译的2个二进制导入到aarch64仿真系统中
+	在odroid-c2上编译二进制，切换到clang/bin目录， 
+./clang -emit-llvm -S fib.c -o fib.bc
+opt
+llc
+./clang
+./fib-cfcss.native
+
+
+5.论文<<cfcss-quantitative evaluation of control flow based soft error protection mechnisms>>中Chapter8有关于gem5 中fault injection的文档。13页总结了相关工作在评估CFC算法时错误注入的缺陷。
+
+6.如何修改gem5 register 的值以实现分支错误注入
+
+
